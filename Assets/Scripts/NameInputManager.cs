@@ -16,6 +16,10 @@ public class NameInputManager : MonoBehaviourPunCallbacks
     {
         confirmButton.onClick.AddListener(OnConfirmButtonClicked);
         warningText.text = "";
+        if (PlayerPrefs.HasKey("PlayerName"))
+        {
+            PhotonNetwork.NickName = PlayerPrefs.GetString("PlayerName");
+        }
     }
 
     private void OnConfirmButtonClicked()
@@ -63,15 +67,5 @@ public class NameInputManager : MonoBehaviourPunCallbacks
             }
         }
         return true;
-    }
-
-    public override void OnJoinedRoom()
-    {
-        // Check if the player already has a name saved
-        if (PlayerPrefs.HasKey("PlayerName"))
-        {
-            PhotonNetwork.NickName = PlayerPrefs.GetString("PlayerName");
-            gameObject.SetActive(false); // Hide the input panel
-        }
     }
 }

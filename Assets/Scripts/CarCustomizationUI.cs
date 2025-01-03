@@ -4,8 +4,9 @@ using TMPro;
 using System;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Photon.Realtime;
 
-public class CarCustomizationUI : MonoBehaviour
+public class CarCustomizationUI : MonoBehaviourPunCallbacks
 {
     [Header("Car Selection")]
     public GameObject carParent; // Reference to CarParent in the scene
@@ -167,10 +168,10 @@ public class CarCustomizationUI : MonoBehaviour
         int materialIndex = Array.IndexOf(carCustomization.availableMaterials, carCustomization.carRenderer.material);
 
         Hashtable customizationData = new Hashtable
-    {
-        { "CarName", selectedCarName },
-        { "CarColor", materialIndex }
-    };
+        {
+            { "CarName", selectedCarName },
+            { "CarColor", materialIndex }
+        };
 
         PhotonNetwork.LocalPlayer.SetCustomProperties(customizationData);
         Debug.Log("Customization data saved.");
@@ -207,9 +208,9 @@ public class CarCustomizationUI : MonoBehaviour
     private void SyncCarColorAcrossPlayers(int colorIndex)
     {
         Hashtable customizationData = new Hashtable
-    {
-        { "CarColor", colorIndex }
-    };
+        {
+            { "CarColor", colorIndex }
+        };
 
         PhotonNetwork.LocalPlayer.SetCustomProperties(customizationData);
         Debug.Log("Car color synced with Photon Player Properties.");
@@ -325,6 +326,72 @@ public class CarCustomizationUI : MonoBehaviour
             PlayerPrefs.SetInt($"CarUnlocked_{i}", isCarUnlocked[i] ? 1 : 0);
         }
         PlayerPrefs.Save();
+    }
+    #endregion
+
+    #region Photon Callbacks
+    // Callback when player properties are updated
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
+
+        if (changedProps.ContainsKey("CarColor"))
+        {
+            int colorIndex = (int)changedProps["CarColor"];
+            ApplyCarColor(targetPlayer, colorIndex);
+        }
+
+        if (changedProps.ContainsKey("CarName"))
+        {
+            string carName = (string)changedProps["CarName"];
+            ApplyCarModel(targetPlayer, carName);
+        }
+    }
+
+    private void ApplyCarColor(Player player, int colorIndex)
+    {
+        GameObject playerCar = FindPlayerCar(player);
+        if (playerCar != null)
+        {
+            CarCustomization customization = playerCar.GetComponent<CarCustomization>();
+            if (customization != null)
+            {
+                customization.ChangeCarColor(colorIndex);
+            }
+        }
+    }
+
+    private void ApplyCarModel(Player player, string carName)
+    {
+        GameObject playerCar = FindPlayerCar(player);
+        if (playerCar != null)
+        {
+            // Assuming each car model is a child of the playerCar GameObject
+            foreach (Transform child in playerCar.transform)
+            {
+                if (child.name == carName)
+                {
+                    child.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    private GameObject FindPlayerCar(Player player)
+    {
+        foreach (var obj in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            PhotonView view = obj.GetComponent<PhotonView>();
+            if (view != null && view.Owner == player)
+            {
+                return obj;
+            }
+        }
+        return null;
     }
     #endregion
 }

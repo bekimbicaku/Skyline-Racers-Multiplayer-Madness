@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using System.Collections;
+using Photon.Realtime;
 
 public class PlayerManager : MonoBehaviourPun
 {
@@ -124,7 +125,7 @@ public class PlayerManager : MonoBehaviourPun
 
     private GameObject FindPlayerByID(int playerID)
     {
-        foreach (var player in PhotonNetwork.PlayerList)
+        foreach (Player player in PhotonNetwork.PlayerList)
         {
             if (player.ActorNumber == playerID)
             {
@@ -134,46 +135,34 @@ public class PlayerManager : MonoBehaviourPun
         return null;
     }
 
-    public void ActivateShield(float shieldDuration)
+    public void ActivateShield(float duration)
     {
         if (isShieldActive) return;
 
         isShieldActive = true;
-        shieldEndTime = Time.time + shieldDuration;
-
+        shieldEndTime = Time.time + duration;
         if (shieldEffectPrefab != null)
         {
-            GameObject shieldEffect = Instantiate(shieldEffectPrefab, transform.position, Quaternion.identity, transform);
-            Destroy(shieldEffect, shieldDuration);
+            Instantiate(shieldEffectPrefab, transform.position, Quaternion.identity, transform);
         }
-
-        StartCoroutine(ShieldDurationCoroutine(shieldDuration));
+        StartCoroutine(DeactivateShieldAfterDuration(duration));
     }
 
-    private IEnumerator ShieldDurationCoroutine(float duration)
+    private IEnumerator DeactivateShieldAfterDuration(float duration)
     {
         yield return new WaitForSeconds(duration);
         isShieldActive = false;
+        Debug.Log("Shield deactivated!");
+    }
+
+    public void ActivateNitro(float duration)
+    {
+        // Implement nitro activation logic
     }
 
     public void RepairDamage(float amount)
     {
-        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-        Debug.Log($"{photonView.Owner.NickName} repaired {amount} health!");
-    }
-
-    public void ActivateNitro(float nitroDuration)
-    {
-        StartCoroutine(NitroBoostCoroutine(nitroDuration));
-    }
-
-    private IEnumerator NitroBoostCoroutine(float duration)
-    {
-        float originalSpeed = currentSpeed;
-        currentSpeed += nitroBoostAmount;
-        Debug.Log("Nitro activated!");
-        yield return new WaitForSeconds(duration);
-        currentSpeed = originalSpeed;
-        Debug.Log("Nitro ended!");
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        Debug.Log($"Repaired {amount} health. Current health: {currentHealth}");
     }
 }

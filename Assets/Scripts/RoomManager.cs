@@ -143,6 +143,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
             mainCamera.gameObject.SetActive(false);
         }
 
+        // Set the player's name property
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerName", PhotonNetwork.NickName } });
+
         // Activate the camera for the player's car
         ActivatePlayerCarCamera();
     }
@@ -167,6 +170,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         // Sync car customization for the new player
         SyncCarCustomizationForNewPlayer(newPlayer);
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log($"Player left room: {otherPlayer.NickName}");
+        UpdateRoomStatus(PhotonNetwork.CurrentRoom.PlayerCount, PhotonNetwork.CurrentRoom.MaxPlayers);
+
+        // If the race has not started and the room is no longer full, stop the countdown
+        if (!raceStarted && PhotonNetwork.IsMasterClient)
+        {
+            StopCoroutine(StartRaceCountdown());
+            UpdateCountdownUI(0); // Reset countdown UI
+        }
     }
 
     private void SyncCarCustomizationForNewPlayer(Player newPlayer)
@@ -298,6 +314,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(1f);
         }
 
+        // Ensure countdown completes by reaching 0
+        pv.RPC("UpdateCountdownUI", RpcTarget.All, 0);
+
         // Start the race after the countdown
         if (PhotonNetwork.IsMasterClient)
         {
@@ -318,58 +337,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
                 PhotonNetwork.LoadLevel("RaceScene");
                 PhotonNetwork.AutomaticallySyncScene = true;
             }
-        }
-    }
-
-    /// <summary>
-    /// Generate a unique room code consisting of 6 characters.
-    /// </summary>
-    private string GenerateUniqueCode()
-    {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        System.Random random = new System.Random();
-        string code;
-        do
-        {
-            code = new string(
-                new char[6].Select(_ => chars[random.Next(chars.Length)]).ToArray());
-        } while (roomCodes.ContainsKey(code)); // Ensure code uniqueness
-
-        return code;
-    }
-    private void SpawnPlayerAtStartPosition()
-    {
-        Transform spawnPoint = spawnPositionManager.AssignStartPosition();
-
-        string selectedCarPrefabName = PlayerPrefs.GetString("SelectedCarPrefab", "DefaultCarPrefab");
-        Debug.Log($"Attempting to instantiate car prefab: {selectedCarPrefabName}");
-
-        if (spawnPoint != null)
-        {
-            GameObject playerCar = PhotonNetwork.Instantiate(selectedCarPrefabName, spawnPoint.position, spawnPoint.rotation);
-            PhotonView carPhotonView = playerCar.GetComponent<PhotonView>();
-
-            if (carPhotonView != null && carPhotonView.IsMine)
-            {
-                CarCustomization customization = playerCar.GetComponent<CarCustomization>();
-                if (customization != null)
-                {
-                    customization.ApplyCarCustomization();
-                }
-                else
-                {
-                    Debug.LogWarning("Spawned car does not have a CarCustomization component!");
-                }
-            }
-            else
-            {
-                Debug.LogError("No PhotonView or not owned by the player!");
-            }
-            ActivatePlayerCarCamera();
-        }
-        else
-        {
-            Debug.LogError("No spawn point assigned!");
         }
     }
 
@@ -405,6 +372,57 @@ public class RoomManager : MonoBehaviourPunCallbacks
         foreach (var key in changedProps.Keys)
         {
             Debug.Log($"{key}: {changedProps[key]}");
+        }
+    }
+
+    // Generate a unique room code consisting of 6 characters.
+    private string GenerateUniqueCode()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        System.Random random = new System.Random();
+        string code;
+        do
+        {
+            code = new string(
+                new char[6].Select(_ => chars[random.Next(chars.Length)]).ToArray());
+        } while (roomCodes.ContainsKey(code)); // Ensure code uniqueness
+
+        return code;
+    }
+
+    private void SpawnPlayerAtStartPosition()
+    {
+        Transform spawnPoint = spawnPositionManager.AssignStartPosition();
+
+        string selectedCarPrefabName = PlayerPrefs.GetString("SelectedCarPrefab", "DefaultCarPrefab");
+        Debug.Log($"Attempting to instantiate car prefab: {selectedCarPrefabName}");
+
+        if (spawnPoint != null)
+        {
+            GameObject playerCar = PhotonNetwork.Instantiate(selectedCarPrefabName, spawnPoint.position, spawnPoint.rotation);
+            PhotonView carPhotonView = playerCar.GetComponent<PhotonView>();
+
+            if (carPhotonView != null && carPhotonView.IsMine)
+            {
+                CarCustomization customization = playerCar.GetComponent<CarCustomization>();
+                if (customization != null)
+                {
+                    customization.ApplyCarCustomization();
+                }
+                else
+                {
+                    Debug.LogWarning("Spawned car does not have a CarCustomization component!");
+                }
+            }
+            else
+            {
+                Debug.LogError("No PhotonView or not owned by the player!");
+            }
+            ActivatePlayerCarCamera();
+        }
+        else
+        {
+            Debug.LogError("No spawn point assigned!");
         }
     }
 }
