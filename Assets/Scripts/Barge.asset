@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6d0d0988af7c5e4dad0cf8b2bd0458d, type: 3}
+  m_Name: Barge
+  m_EditorClassIdentifier: 
+  powerUpName: Barge
+  icon: {fileID: 0}
+  duration: 1
+  damage: 30
+  effectPrefab: {fileID: 195351485861382458, guid: d4b2c3d345691a94f9425fdb27f85a6e, type: 3}
+  type: 0
+  radius: 10
+  force: 500

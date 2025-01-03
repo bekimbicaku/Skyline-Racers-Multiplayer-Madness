@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd43125c791a0cb46a1c32fa13996ed1, type: 3}
+  m_Name: Shield
+  m_EditorClassIdentifier: 
+  powerUpName: Shield
+  icon: {fileID: 21300000, guid: 644d20c544f8fd3438fb48a92987e679, type: 3}
+  duration: 10
+  damage: 0
+  effectPrefab: {fileID: 4357744581618226802, guid: 953755ea340514544990609d32ae2cae, type: 3}
+  type: 1
+  shieldEffectPrefab: {fileID: 4357744581618226802, guid: 953755ea340514544990609d32ae2cae, type: 3}

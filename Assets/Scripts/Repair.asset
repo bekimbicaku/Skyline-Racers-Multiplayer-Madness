@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5374bda29cf3b24dbde3b321fad25e7, type: 3}
+  m_Name: Repair
+  m_EditorClassIdentifier: 
+  powerUpName: Repair
+  icon: {fileID: 21300000, guid: 5e105b2cd9cf8de4b9d2080c795668bf, type: 3}
+  duration: 3
+  damage: 0
+  effectPrefab: {fileID: 3435926068599397936, guid: ab5496d9460e628428db80e64f6569ad, type: 3}
+  type: 2
+  repairAmount: 50
