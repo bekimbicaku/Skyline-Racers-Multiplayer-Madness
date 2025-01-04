@@ -236,10 +236,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
     // Update the room status text
     private void UpdateRoomStatus(int playerCount, int maxPlayers)
     {
+        int botCount = botManager ? botManager.currentBotCount : 0;
+        int totalPlayers = playerCount + botCount;
+
         if (PhotonNetwork.InRoom)
         {
             // If the player is still in a room, update the room number and status
-            roomStatusText.text = $"Room: {playerCount}/{maxPlayers} players";
+            roomStatusText.text = $"Room: {totalPlayers}/{maxPlayers} players";
         }
         else
         {

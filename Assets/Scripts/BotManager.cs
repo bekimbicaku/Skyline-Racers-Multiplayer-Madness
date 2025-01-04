@@ -9,12 +9,14 @@ public class BotManager : MonoBehaviourPunCallbacks
     public GameObject botPrefab;
     public Transform[] spawnPoints;
     public int maxBotsPerRoom = 3;
-    private int currentBotCount = 0;
+    public int currentBotCount = 0;
 
     private List<string> botNames = new List<string>
     {
         "BotAlpha", "BotBeta", "BotGamma", "BotDelta", "BotEpsilon", "BotZeta", "BotEta", "BotTheta"
     };
+
+    private List<Transform> usedSpawnPoints = new List<Transform>();
 
     public void StartAddingBots()
     {
@@ -26,9 +28,15 @@ public class BotManager : MonoBehaviourPunCallbacks
     {
         if (currentBotCount >= maxBotsPerRoom) return;
 
-        // Instantiate bot at a random spawn point
-        int spawnIndex = Random.Range(0, spawnPoints.Length);
-        GameObject bot = PhotonNetwork.Instantiate(botPrefab.name, spawnPoints[spawnIndex].position, spawnPoints[spawnIndex].rotation);
+        Transform spawnPoint = GetFreeSpawnPoint();
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning("No free spawn points available for bots");
+            return;
+        }
+
+        // Instantiate bot at the free spawn point
+        GameObject bot = PhotonNetwork.Instantiate(botPrefab.name, spawnPoint.position, spawnPoint.rotation);
 
         // Add BotAI component to the bot
         bot.AddComponent<BotAI>();
@@ -43,10 +51,26 @@ public class BotManager : MonoBehaviourPunCallbacks
         if (botPhotonView != null)
         {
             botPhotonView.Owner.NickName = botName;
-            botPhotonView.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerName", botName } });
+            botPhotonView.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerName", botName }, { "IsBot", true } });
         }
 
+        // Mark the spawn point as used
+        usedSpawnPoints.Add(spawnPoint);
+
         currentBotCount++;
+    }
+
+    private Transform GetFreeSpawnPoint()
+    {
+        // Find a spawn point that is not used
+        foreach (Transform spawnPoint in spawnPoints)
+        {
+            if (!usedSpawnPoints.Contains(spawnPoint))
+            {
+                return spawnPoint;
+            }
+        }
+        return null;
     }
 
     private IEnumerator AddBotsSequentially()
@@ -61,14 +85,22 @@ public class BotManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log($"Player entered room: {newPlayer.NickName}");
+        UpdateRoomStatus();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log($"Player left room: {otherPlayer.NickName}");
-        if (otherPlayer.NickName.StartsWith("Bot"))
+        if (otherPlayer.CustomProperties.ContainsKey("IsBot"))
         {
             currentBotCount--;
         }
+        UpdateRoomStatus();
+    }
+
+    private void UpdateRoomStatus()
+    {
+        int totalPlayers = PhotonNetwork.CurrentRoom.PlayerCount + currentBotCount;
+        Debug.Log($"Room status updated: {totalPlayers} players in room.");
     }
 }
