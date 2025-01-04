@@ -27,6 +27,11 @@ public class CarCustomization : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        if (photonView.IsMine)
+        {
+            ApplyCarCustomization();
+        }
+
         if (carRenderer == null)
         {
             carRenderer = GetComponentInChildren<Renderer>(); // Or your specific car model

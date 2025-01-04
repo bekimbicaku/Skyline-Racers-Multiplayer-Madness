@@ -20,6 +20,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public Button quickRaceButton, createRoomButton, joinRoomButton, leaveRoomButton; // Added leaveRoomButton
     public TextMeshProUGUI countdownText, roomStatusText, roomCodeDisplay;
     public GameObject menuPanel, gamePanel;
+    public BotManager botManager; // Reference to the BotManager
 
     private void Awake()
     {
@@ -74,7 +75,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.LogWarning("Not connected to Photon.");
+            PhotonNetwork.ConnectUsingSettings();
         }
     }
 
@@ -148,6 +149,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         // Activate the camera for the player's car
         ActivatePlayerCarCamera();
+
+        // Start adding bots after the player has joined the room
+        botManager.StartAddingBots();
     }
 
     public override void OnCreatedRoom()
@@ -310,16 +314,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         for (int i = 5; i > 0; i--)
         {
+            Debug.Log($"Countdown: {i}"); // Log countdown for debugging
             pv.RPC("UpdateCountdownUI", RpcTarget.All, i); // Sync countdown
             yield return new WaitForSeconds(1f);
         }
 
         // Ensure countdown completes by reaching 0
         pv.RPC("UpdateCountdownUI", RpcTarget.All, 0);
+        Debug.Log("Countdown completed, starting race..."); // Log countdown completion
 
         // Start the race after the countdown
         if (PhotonNetwork.IsMasterClient)
         {
+            Debug.Log("Master Client starting race..."); // Log before starting race
             pv.RPC("StartRace", RpcTarget.AllBuffered);
         }
     }
@@ -330,12 +337,15 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (!raceStarted)
         {
             raceStarted = true;
+            Debug.Log("Race starting..."); // Log race start
 
             // Master Client starts the scene load
             if (PhotonNetwork.IsMasterClient)
             {
+                Debug.Log("Master Client loading RaceScene..."); // Log before loading scene
                 PhotonNetwork.LoadLevel("RaceScene");
-                PhotonNetwork.AutomaticallySyncScene = true;
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                PhotonNetwork.CurrentRoom.IsVisible = false;
             }
         }
     }

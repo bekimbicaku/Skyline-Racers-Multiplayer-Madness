@@ -2762,6 +2762,81 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1001 &393606297
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 597690284}
+    m_Modifications:
+    - target: {fileID: 174267822789092553, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: sceneViewId
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 1371953025855939705, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_Name
+      value: Nissan Skyline GT-R Kenmeri
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 29.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 29.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9659259
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.2588191
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5387225999372860959, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+--- !u!4 &393606298 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+  m_PrefabInstance: {fileID: 393606297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &393606299 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1371953025855939705, guid: 7766be705d128d04994f97ad5782f701, type: 3}
+  m_PrefabInstance: {fileID: 393606297}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &400939414
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3646,7 +3721,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1648801167}
+  - {fileID: 393606298}
   - {fileID: 7655415373609038209}
   - {fileID: 1798041454}
   - {fileID: 952384049}
@@ -9560,16 +9635,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1629348854}
   m_CullTransparentMesh: 1
---- !u!1 &1648801160 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1371953025855939705, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-  m_PrefabInstance: {fileID: 5803864997461776908}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1648801167 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-  m_PrefabInstance: {fileID: 5803864997461776908}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1675339166
 GameObject:
   m_ObjectHideFlags: 0
@@ -9675,7 +9740,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carParent: {fileID: 597690283}
   carModels:
-  - {fileID: 1648801160}
+  - {fileID: 393606299}
   - {fileID: 5108957420728249131, guid: fbc2a98a3d00f6f4ea1bbb562df864ce, type: 3}
   - {fileID: 3329829076241284927, guid: 0c00ed5ef3da42c46a3f425a354611a5, type: 3}
   - {fileID: 3375418523718707437, guid: af8dc8cc83d8d514e85fe38344a9d58d, type: 3}
@@ -9726,7 +9791,7 @@ MonoBehaviour:
   upgradeAmount: 1
   unlockLevels: 01000000010000000100000007000000090000000d0000000f0000001000000011000000130000001900000019000000190000001900000019000000
   carPrices: 000000000000000000000000e6000000fa00000090010000ae010000c2010000e0010000f40100000d020000580200006c0200008a020000bc02000084030000
-  isCarUnlocked: 01010100000000000000000000000000
+  isCarUnlocked: 01010000000000000000000000000000
   unlockRequirementText: {fileID: 1586643584}
   playerLevel: 1
   upgradeCost: 100
@@ -12690,6 +12755,7 @@ GameObject:
   - component: {fileID: 2143513047}
   - component: {fileID: 2143513049}
   - component: {fileID: 2143513051}
+  - component: {fileID: 2143513052}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -12721,6 +12787,7 @@ MonoBehaviour:
   roomCodeDisplay: {fileID: 120274039}
   menuPanel: {fileID: 804808097}
   gamePanel: {fileID: 1915807856}
+  botManager: {fileID: 2143513052}
 --- !u!4 &2143513048
 Transform:
   m_ObjectHideFlags: 0
@@ -12791,6 +12858,29 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2143513052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143513045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cc5f922c14619c45a7ca6bbe5754106, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  botPrefab: {fileID: 506759772245716563, guid: bc56b68986de1164faf385db697d66a1, type: 3}
+  spawnPoints:
+  - {fileID: 1343706727}
+  - {fileID: 978617138}
+  - {fileID: 10078024}
+  - {fileID: 899823422}
+  - {fileID: 2029144935}
+  - {fileID: 1927873495}
+  - {fileID: 1867208871}
+  - {fileID: 136885932}
+  maxBotsPerRoom: 3
 --- !u!1001 &1183516306925073112
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13462,71 +13552,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f4415a007d811d46bf11f4734a2267c, type: 3}
---- !u!1001 &5803864997461776908
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 597690284}
-    m_Modifications:
-    - target: {fileID: 174267822789092553, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: sceneViewId
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1371953025855939705, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_Name
-      value: Nissan Skyline GT-R Kenmeri
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 29.83
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.68
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 29.53
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.9659259
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.2588191
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1747951558887882435, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5387225999372860959, guid: 7766be705d128d04994f97ad5782f701, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7766be705d128d04994f97ad5782f701, type: 3}
 --- !u!1001 &6881782671205277796
 PrefabInstance:
   m_ObjectHideFlags: 0
