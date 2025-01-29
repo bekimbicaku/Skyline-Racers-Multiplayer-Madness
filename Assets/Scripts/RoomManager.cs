@@ -21,7 +21,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public TextMeshProUGUI countdownText, roomStatusText, roomCodeDisplay;
     public GameObject menuPanel, gamePanel;
     public BotManager botManager; // Reference to the BotManager
-
+    public int totalPlayers;
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -29,7 +29,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             Debug.LogError("PhotonView is not attached to RoomManager!");
         }
-        PhotonNetwork.AutomaticallySyncScene = true;
+
     }
 
     void Start()
@@ -92,7 +92,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         string roomName = $"QuickRoom_{Random.Range(1000, 9999)}";
         RoomOptions roomOptions = new RoomOptions
         {
-            MaxPlayers = 8,
+            MaxPlayers = 3,
             IsVisible = true, // The room is visible to others
             IsOpen = true     // The room is open for joining
         };
@@ -108,7 +108,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         string roomCode = GenerateUniqueCode();
         RoomOptions roomOptions = new RoomOptions
         {
-            MaxPlayers = 8,  // Limit players to 8
+            MaxPlayers = 3,  // Limit players to 8
             IsVisible = false, // Invisible to random joins
             IsOpen = true     // Open for code-based joining
         };
@@ -166,7 +166,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         UpdateRoomStatus(PhotonNetwork.CurrentRoom.PlayerCount, PhotonNetwork.CurrentRoom.MaxPlayers);
 
         // Start the race countdown if the room is full and the local player is the Master Client
-        if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers && PhotonNetwork.IsMasterClient)
+        if (totalPlayers == PhotonNetwork.CurrentRoom.MaxPlayers && PhotonNetwork.IsMasterClient)
         {
             Debug.Log("Room is full. Starting race countdown...");
             StartCoroutine(StartRaceCountdown());
@@ -234,10 +234,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
     }
 
     // Update the room status text
-    private void UpdateRoomStatus(int playerCount, int maxPlayers)
+    public void UpdateRoomStatus(int playerCount, int maxPlayers)
     {
-        int botCount = botManager ? botManager.currentBotCount : 0;
-        int totalPlayers = playerCount + botCount;
+        playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+        int botCount = FindObjectOfType<BotManager>()?.currentBotCount ?? 0;
+        totalPlayers = playerCount + botCount;
+        maxPlayers = PhotonNetwork.CurrentRoom.MaxPlayers;
+
 
         if (PhotonNetwork.InRoom)
         {
@@ -308,7 +311,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
         return null;
     }
-
     private IEnumerator StartRaceCountdown()
     {
         if (raceStarted) yield break; // Prevent multiple starts
@@ -341,15 +343,16 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             raceStarted = true;
             Debug.Log("Race starting..."); // Log race start
+                                           // Start the race after the countdown
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
 
-            // Master Client starts the scene load
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Debug.Log("Master Client loading RaceScene..."); // Log before loading scene
-                PhotonNetwork.LoadLevel("RaceScene");
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                PhotonNetwork.CurrentRoom.IsVisible = false;
-            }
+            // Load the RaceScene
+            Debug.Log("Loading RaceScene..."); // Log before loading scene
+            PhotonNetwork.LoadLevel("RaceScene");
+
+            PhotonNetwork.AutomaticallySyncScene = true; // Ensure this is set
+            PhotonNetwork.ConnectUsingSettings();
         }
     }
 
@@ -420,6 +423,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
                 CarCustomization customization = playerCar.GetComponent<CarCustomization>();
                 if (customization != null)
                 {
+                    customization.carId = PhotonNetwork.LocalPlayer.ActorNumber; // Assign unique carId
                     customization.ApplyCarCustomization();
                 }
                 else

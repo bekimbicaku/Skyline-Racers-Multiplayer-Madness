@@ -97,7 +97,6 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
         SetSelectedStat("Speed");
     }
 
-    #region Car Selection
     private void UpdateCarSelection()
     {
         for (int i = 0; i < carModels.Length; i++)
@@ -146,9 +145,7 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
         currentCarIndex = (currentCarIndex - 1 + carModels.Length) % carModels.Length;
         UpdateCarSelection();
     }
-    #endregion
 
-    #region Car Customization
     private void SelectCar()
     {
         PlayerPrefs.SetInt("SelectedCarIndex", currentCarIndex);
@@ -188,7 +185,7 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
         int colorIndex = Array.IndexOf(colorButtons, button);
         if (colorIndex >= 0 && colorIndex < carCustomization.availableMaterials.Length)
         {
-            carCustomization.ChangeCarColor(colorIndex);
+            carCustomization.ChangeCarColor(colorIndex, carCustomization.carId); // Pass carId here
             selectedMaterial = carCustomization.availableMaterials[colorIndex];
 
             // Save the selected color to PlayerPrefs
@@ -208,17 +205,14 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
     private void SyncCarColorAcrossPlayers(int colorIndex)
     {
         Hashtable customizationData = new Hashtable
-        {
-            { "CarColor", colorIndex }
-        };
+    {
+        { "CarColor", colorIndex }
+    };
 
         PhotonNetwork.LocalPlayer.SetCustomProperties(customizationData);
         Debug.Log("Car color synced with Photon Player Properties.");
     }
 
-    #endregion
-
-    #region Upgrades
     private void SetSelectedStat(string stat)
     {
         selectedStat = stat;
@@ -288,9 +282,7 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
     {
         playerCoinsText.text = $"Coins: {playerCoins}";
     }
-    #endregion
 
-    #region Car Unlocking
     private void UnlockCar()
     {
         if (playerLevel >= unlockLevels[currentCarIndex] && playerCoins >= carPrices[currentCarIndex])
@@ -327,9 +319,7 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
         }
         PlayerPrefs.Save();
     }
-    #endregion
 
-    #region Photon Callbacks
     // Callback when player properties are updated
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
@@ -356,7 +346,7 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
             CarCustomization customization = playerCar.GetComponent<CarCustomization>();
             if (customization != null)
             {
-                customization.ChangeCarColor(colorIndex);
+                customization.ChangeCarColor(colorIndex, customization.carId); // Pass carId here
             }
         }
     }
@@ -393,5 +383,4 @@ public class CarCustomizationUI : MonoBehaviourPunCallbacks
         }
         return null;
     }
-    #endregion
 }

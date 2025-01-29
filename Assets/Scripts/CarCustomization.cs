@@ -8,6 +8,9 @@ public class CarCustomization : MonoBehaviourPunCallbacks
     public Renderer carRenderer; // Renderer for the car body
     public Material[] availableMaterials; // Array of materials for car colors or designs
 
+    // Add a unique ID for each car
+    public int carId;
+
     // Player upgrade stats
     public float baseSpeed = 100f;
     public float baseHandling = 5f;
@@ -36,6 +39,7 @@ public class CarCustomization : MonoBehaviourPunCallbacks
         {
             carRenderer = GetComponentInChildren<Renderer>(); // Or your specific car model
         }
+
         // Apply initial customization settings (either from saved data or defaults)
         ApplyCarCustomization();
     }
@@ -94,7 +98,7 @@ public class CarCustomization : MonoBehaviourPunCallbacks
         if (materialIndex >= 0 && materialIndex < availableMaterials.Length)
         {
             carRenderer.material = availableMaterials[materialIndex];
-            photonView.RPC("SyncCarColor", RpcTarget.AllBuffered, materialIndex);
+            photonView.RPC("SyncCarColor", RpcTarget.AllBuffered, materialIndex, carId);
         }
 
         // Sync the car stats across the network
@@ -102,11 +106,14 @@ public class CarCustomization : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void SyncCarColor(int materialIndex)
+    private void SyncCarColor(int materialIndex, int carId)
     {
         if (materialIndex >= 0 && materialIndex < availableMaterials.Length)
         {
-            carRenderer.material = availableMaterials[materialIndex];
+            if (carId == this.carId) // Add a unique car identifier check
+            {
+                carRenderer.material = availableMaterials[materialIndex];
+            }
         }
     }
 
@@ -118,7 +125,7 @@ public class CarCustomization : MonoBehaviourPunCallbacks
         int materialIndex = PlayerPrefs.GetInt("CarColor", 0);
 
         // Synchronize color across the network
-        photonView.RPC("SyncCarColor", RpcTarget.AllBuffered, materialIndex);
+        photonView.RPC("SyncCarColor", RpcTarget.AllBuffered, materialIndex, carId);
 
         // Apply customization settings
         ApplyCarCustomization();
@@ -138,12 +145,20 @@ public class CarCustomization : MonoBehaviourPunCallbacks
         PlayerPrefs.Save();
     }
 
-    public void ChangeCarColor(int materialIndex)
+    public void ChangeCarColor(int materialIndex, int carId)
     {
         if (materialIndex >= 0 && materialIndex < availableMaterials.Length)
         {
             carRenderer.material = availableMaterials[materialIndex];
-            photonView.RPC("SyncCarColor", RpcTarget.AllBuffered, materialIndex);
+
+            if (PhotonNetwork.InRoom)
+            {
+                photonView.RPC("SyncCarColor", RpcTarget.AllBuffered, materialIndex, carId);
+            }
+            else
+            {
+                Debug.LogWarning("Cannot sync car color. RPCs can only be sent in rooms.");
+            }
         }
         else
         {

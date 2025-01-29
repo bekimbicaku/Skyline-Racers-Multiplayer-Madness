@@ -26,6 +26,20 @@ public class StartPositionManager : MonoBehaviour
         }
     }
 
+    public Transform AssignBotStartPosition()
+    {
+        for (int i = 0; i < positionOccupied.Length; i++)
+        {
+            if (!positionOccupied[i])
+            {
+                positionOccupied[i] = true;
+                return startPositions[i];
+            }
+        }
+        Debug.LogWarning("Not enough spawn positions for all bots.");
+        return null;
+    }
+
     public void ReleasePosition(Transform position)
     {
         int index = System.Array.IndexOf(startPositions, position);

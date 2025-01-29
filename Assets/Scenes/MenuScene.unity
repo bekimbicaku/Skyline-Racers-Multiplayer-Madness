@@ -12788,6 +12788,7 @@ MonoBehaviour:
   menuPanel: {fileID: 804808097}
   gamePanel: {fileID: 1915807856}
   botManager: {fileID: 2143513052}
+  totalPlayers: 0
 --- !u!4 &2143513048
 Transform:
   m_ObjectHideFlags: 0
@@ -12871,16 +12872,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   botPrefab: {fileID: 506759772245716563, guid: bc56b68986de1164faf385db697d66a1, type: 3}
-  spawnPoints:
-  - {fileID: 1343706727}
-  - {fileID: 978617138}
-  - {fileID: 10078024}
-  - {fileID: 899823422}
-  - {fileID: 2029144935}
-  - {fileID: 1927873495}
-  - {fileID: 1867208871}
-  - {fileID: 136885932}
-  maxBotsPerRoom: 7
+  startPositionManager: {fileID: 2143513049}
+  maxBotsPerRoom: 0
   currentBotCount: 0
 --- !u!1001 &1183516306925073112
 PrefabInstance:

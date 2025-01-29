@@ -10,9 +10,8 @@ public class PlayerManager : MonoBehaviourPun
     public Transform backSpawnPoint;
 
     [Header("UI Elements")]
-    public GameObject powerUpButtonUI1;
-    public GameObject powerUpButtonUI2;
-
+    private RaceManager raceManager;
+   
     [Header("Player Stats")]
     public float maxHealth = 100f;
     private float currentHealth;
@@ -31,6 +30,7 @@ public class PlayerManager : MonoBehaviourPun
 
     private void Start()
     {
+        raceManager = FindObjectOfType<RaceManager>();
         currentHealth = maxHealth;
     }
 
@@ -81,13 +81,13 @@ public class PlayerManager : MonoBehaviourPun
     {
         if (slot == 1)
         {
-            powerUpButtonUI1.GetComponent<UnityEngine.UI.Image>().sprite = currentPowerUp1.icon;
-            powerUpButtonUI1.SetActive(true);
+            raceManager.powerUpButtonUI1.GetComponent<UnityEngine.UI.Image>().sprite = currentPowerUp1.icon;
+            raceManager.powerUpButtonUI1.SetActive(true);
         }
         else if (slot == 2)
         {
-            powerUpButtonUI2.GetComponent<UnityEngine.UI.Image>().sprite = currentPowerUp2.icon;
-            powerUpButtonUI2.SetActive(true);
+            raceManager.powerUpButtonUI2.GetComponent<UnityEngine.UI.Image>().sprite = currentPowerUp2.icon;
+            raceManager.powerUpButtonUI2.SetActive(true);
         }
     }
 
@@ -97,13 +97,13 @@ public class PlayerManager : MonoBehaviourPun
         {
             photonView.RPC("UsePowerUp", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber, 1);
             currentPowerUp1 = null;
-            powerUpButtonUI1.SetActive(false);
+            raceManager.powerUpButtonUI1.SetActive(false);
         }
         else if (slot == 2 && currentPowerUp2 != null)
         {
             photonView.RPC("UsePowerUp", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber, 2);
             currentPowerUp2 = null;
-            powerUpButtonUI2.SetActive(false);
+            raceManager.powerUpButtonUI2.SetActive(false);
         }
     }
 

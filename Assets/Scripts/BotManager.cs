@@ -7,7 +7,7 @@ using System.Collections;
 public class BotManager : MonoBehaviourPunCallbacks
 {
     public GameObject botPrefab;
-    public Transform[] spawnPoints;
+    public StartPositionManager startPositionManager;
     public int maxBotsPerRoom = 3;
     public int currentBotCount = 0;
 
@@ -16,61 +16,13 @@ public class BotManager : MonoBehaviourPunCallbacks
         "BotAlpha", "BotBeta", "BotGamma", "BotDelta", "BotEpsilon", "BotZeta", "BotEta", "BotTheta"
     };
 
-    private List<Transform> usedSpawnPoints = new List<Transform>();
+    private HashSet<Transform> usedSpawnPoints = new HashSet<Transform>();
 
     public void StartAddingBots()
     {
-        // Start coroutine to add bots sequentially
+        if (!PhotonNetwork.IsMasterClient) return; // Only the Master Client should add bots
+
         StartCoroutine(AddBotsSequentially());
-    }
-
-    private void CreateBot()
-    {
-        if (currentBotCount >= maxBotsPerRoom) return;
-
-        Transform spawnPoint = GetFreeSpawnPoint();
-        if (spawnPoint == null)
-        {
-            Debug.LogWarning("No free spawn points available for bots");
-            return;
-        }
-
-        // Instantiate bot at the free spawn point
-        GameObject bot = PhotonNetwork.Instantiate(botPrefab.name, spawnPoint.position, spawnPoint.rotation);
-
-        // Add BotAI component to the bot
-        bot.AddComponent<BotAI>();
-
-        // Assign a random name to the bot
-        int nameIndex = Random.Range(0, botNames.Count);
-        string botName = botNames[nameIndex];
-        botNames.RemoveAt(nameIndex); // Remove the name from the list to avoid duplicates
-
-        // Set the bot name in Photon custom properties
-        PhotonView botPhotonView = bot.GetComponent<PhotonView>();
-        if (botPhotonView != null)
-        {
-            botPhotonView.Owner.NickName = botName;
-            botPhotonView.Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "PlayerName", botName }, { "IsBot", true } });
-        }
-
-        // Mark the spawn point as used
-        usedSpawnPoints.Add(spawnPoint);
-
-        currentBotCount++;
-    }
-
-    private Transform GetFreeSpawnPoint()
-    {
-        // Find a spawn point that is not used
-        foreach (Transform spawnPoint in spawnPoints)
-        {
-            if (!usedSpawnPoints.Contains(spawnPoint))
-            {
-                return spawnPoint;
-            }
-        }
-        return null;
     }
 
     private IEnumerator AddBotsSequentially()
@@ -82,25 +34,25 @@ public class BotManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
+    private void CreateBot()
     {
-        Debug.Log($"Player entered room: {newPlayer.NickName}");
-        UpdateRoomStatus();
-    }
+        if (currentBotCount >= maxBotsPerRoom) return;
 
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        Debug.Log($"Player left room: {otherPlayer.NickName}");
-        if (otherPlayer.CustomProperties.ContainsKey("IsBot"))
+        Transform spawnPoint = startPositionManager.AssignBotStartPosition();
+        if (spawnPoint == null)
         {
-            currentBotCount--;
+            Debug.LogWarning("No free spawn points available for bots");
+            return;
         }
-        UpdateRoomStatus();
+
+        GameObject bot = PhotonNetwork.Instantiate(botPrefab.name, spawnPoint.position, spawnPoint.rotation);
+        bot.GetComponent<PhotonView>().Owner.NickName = botNames[currentBotCount % botNames.Count]; // Give the bot a name
+        bot.GetComponent<PhotonView>().Owner.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "IsBot", true } });
+        currentBotCount++;
+
+        RoomManager roomManager = FindObjectOfType<RoomManager>();
+        roomManager.UpdateRoomStatus(PhotonNetwork.CurrentRoom.PlayerCount, PhotonNetwork.CurrentRoom.MaxPlayers); // Call UpdateRoomStatus whenever a bot is added
     }
 
-    private void UpdateRoomStatus()
-    {
-        int totalPlayers = PhotonNetwork.CurrentRoom.PlayerCount + currentBotCount;
-        Debug.Log($"Room status updated: {totalPlayers} players in room.");
-    }
+   
 }

@@ -652,6 +652,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 84fdf563625c0d14fa83251f51d3e850, type: 2}
   - {fileID: 2100000, guid: c2de2a2f1b63e584bb9f325b9bc1de95, type: 2}
   - {fileID: 2100000, guid: 22430796e82103e4999079a2513b038e, type: 2}
+  carId: 0
   baseSpeed: 100
   baseHandling: 5
   baseAcceleration: 10
@@ -670,8 +671,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frontSpawnPoint: {fileID: 4421398492302116740}
   backSpawnPoint: {fileID: 2552096316867435610}
-  powerUpButtonUI1: {fileID: 0}
-  powerUpButtonUI2: {fileID: 0}
   maxHealth: 100
   shieldEffectPrefab: {fileID: 4357744581618226802, guid: 953755ea340514544990609d32ae2cae, type: 3}
   nitroBoostAmount: 10
